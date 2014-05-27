@@ -1,0 +1,3 @@
+
+class IndexOutOfBoundsException(BaseException):
+    pass
