@@ -1,7 +1,8 @@
-from fn import PolymorphicFn, wrap_fn, wrap_varargs, defprotocol, Protocol
+from fn import PolymorphicFn, wrap_fn, wrap_varargs, defprotocol, Protocol, extend
 from base_types import Object, id_gen
 from base_types import true, false, nil
 from exceptions import IndexOutOfBoundsException
+
 
 
 defprotocol("IIndexed", "_nth")
@@ -14,9 +15,11 @@ defprotocol("IEquiv", "_equiv")
 defprotocol("ICollection", "_conj")
 defprotocol("IIntEquiv", "_equiv_int")
 defprotocol("ISeqable", '_seq')
+defprotocol("IHash", "_hash")
 defprotocol("Sequential")
 
-defprotocol("Number", "_number_add")
+defprotocol("Number", "_add")
+defprotocol("NumberInt", "_add_int")
 
 @wrap_fn
 def cons(a, b):
@@ -53,7 +56,7 @@ def seq(a):
 
 @wrap_fn
 def count(a):
-    if is_satisfies.invoke2(ICounted, a):
+    if is_satisfies.invoke2(ICounted, a) is true:
         return _count.invoke1(a)
 
     import numbers
@@ -71,6 +74,15 @@ def is_satisfies(a, b):
     assert isinstance(b, Object)
     return true if a.is_extended(b.type()) else false
 
+@wrap_fn
+def hash(a):
+    return _hash.invoke1(a)
+
+@wrap_fn
+def lazy_seq(f):
+    from lazy_seq import LazySeq
+    return LazySeq(f)
+
 #####
 
 @wrap_fn
@@ -80,6 +92,18 @@ def are_identical(a, b):
 @wrap_fn
 def is_nil(a):
     return true if a is nil else false
+
+
+### nil
+
+@extend(nil._type, _count)
+def __count(a):
+    import numbers
+    return numbers.int_zero
+
+@extend(nil._type, _seq)
+def __count(a):
+    return nil
 
 ### Array
 

@@ -5,11 +5,9 @@ from numbers import wrap_int
 from rpython.rlib.rarithmetic import r_uint32
 from murmer3 import mix_col_hash
 
-neg_one = r_uint32(1) << 31
-
 class ASeq(Object):
     def __init__(self):
-        self._hash = neg_one
+        self._hash = None
 
     def rt_equiv(self, obj):
         if not RT.is_satisfies.invoke2(RT.Sequential, obj):
@@ -30,7 +28,7 @@ class ASeq(Object):
             hash = r_uint32(1)
             x = RT.seq.invoke1(self)
             while x is not nil:
-                hash = r_uint32(31) * hash + RT.hash.invoke1(RT.first.invoke1(x))
+                hash = r_uint32(31) * hash + RT.hash.invoke1(RT.first.invoke1(x))._int_value
                 n += 1
                 x = RT.next.invoke1(x)
 

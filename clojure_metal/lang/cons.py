@@ -7,6 +7,7 @@ from aseq import ASeq
 @mark_as(RT.Sequential)
 class Cons(ASeq):
     def __init__(self, first, more, meta=nil):
+        ASeq.__init__(self)
         self._first = first
         self._more = more
         self._meta = meta
