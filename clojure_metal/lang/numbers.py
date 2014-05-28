@@ -15,11 +15,10 @@ class WInt(Object):
 def wrap_int(i):
     return WInt(i)
 
-_eq_int = PolymorphicFn()
-RT._eq.extend(WInt._type, wrap_fn(lambda a, b: _eq_int.invoke2(b, a)))
+RT._equiv.extend(WInt._type, wrap_fn(lambda a, b: RT._equiv_int.invoke2(b, a)))
 
 
-@extend(WInt._type, _eq_int)
+@extend(WInt._type, RT._equiv_int)
 def _eq_int_int(b, a):
     assert isinstance(a, WInt)
     assert isinstance(b, WInt)

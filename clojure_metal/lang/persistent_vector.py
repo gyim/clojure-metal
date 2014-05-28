@@ -1,5 +1,5 @@
 from base_types import Object, id_gen, nil
-from fn import extend
+from fn import extend, extend_rt
 from exceptions import IndexOutOfBoundsException
 import rt as RT
 from fn import wrap_varargs
@@ -20,7 +20,7 @@ EMPTY_NODE = Node(NOEDIT, [None] * 32)
 
 
 
-
+@extend_rt
 class PersistentVector(Object):
     _type = id_gen.next_id()
     def type(self):
@@ -134,6 +134,9 @@ class PersistentVector(Object):
         ret._array[0] = self.new_path(edit, level - 5, node)
         return ret
 
+    def rt_conj(self, b):
+        return self.cons(b)
+
 EMPTY = PersistentVector(nil, r_uint(0), r_uint(5), EMPTY_NODE, [])
 
 def create(*args):
@@ -142,18 +145,13 @@ def create(*args):
         ret = ret.cons(val)
     return ret
 
-@extend(PersistentVector._type, RT._conj)
-def conj(a, b):
-    assert isinstance(a, PersistentVector)
-    return a.cons(b)
-
 @extend(PersistentVector._type, RT._nth)
 def nth(a, b):
     assert isinstance(a, PersistentVector)
     return a.nth(b._int_value)
 
 @extend(PersistentVector._type, RT._count)
-def nth(a):
+def count(a):
     assert isinstance(a, PersistentVector)
     return wrap_int(int(a._cnt))
 

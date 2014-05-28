@@ -1,4 +1,4 @@
-from clojure_metal.lang.fn import IFn, AbstractMethodException, PolymorphicFn
+from clojure_metal.lang.fn import IFn, AbstractMethodException, PolymorphicFn, defprotocol
 from clojure_metal.lang.base_types import Object, id_gen
 
 class Thing(Object):
@@ -25,9 +25,9 @@ def test_calling():
     except AbstractMethodException, ex:
         assert ex.method == "2"
 
+defprotocol("IDummy", "dummy")
 
 def test_polymorphic_fn():
-    pfn = PolymorphicFn()
-    pfn.extend(thing.type(), SimpleFn())
+    dummy.extend(thing.type(), SimpleFn())
 
-    assert pfn.invoke1(thing) is thing
+    assert dummy.invoke1(thing) is thing

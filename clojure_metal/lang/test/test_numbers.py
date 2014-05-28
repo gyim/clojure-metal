@@ -8,5 +8,5 @@ def test_create_int():
     b = wrap_int(1)
     c = wrap_int(1)
 
-    assert RT._eq.invoke2(a, b) is false
-    assert RT._eq.invoke2(b, c) is true
+    assert RT._equiv.invoke2(a, b) is false
+    assert RT._equiv.invoke2(b, c) is true

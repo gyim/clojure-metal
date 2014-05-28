@@ -30,5 +30,5 @@ def test_large_vector():
 
     for x in range(1024 * 2):
         v = RT.nth.invoke2(r, wrap_int(x))
-        assert RT._eq.invoke2(v, wrap_int(x)) is true
+        assert RT._equiv.invoke2(v, wrap_int(x)) is true
 

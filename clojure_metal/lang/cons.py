@@ -1,8 +1,11 @@
 from base_types import Object, id_gen, nil
-from fn import extend
+from fn import extend, extend_rt, mark_as
 import rt as RT
+from aseq import ASeq
 
-class Cons(Object):
+@extend_rt
+@mark_as(RT.Sequential)
+class Cons(ASeq):
     def __init__(self, first, more, meta=nil):
         self._first = first
         self._more = more
@@ -27,3 +30,10 @@ def next(self):
 def with_meta(self, meta):
     assert isinstance(self, Cons)
     return Cons(self._first, self._more, meta)
+
+
+def create(*args):
+    acc = nil
+    for x in args:
+        acc = Cons(x, acc)
+    return acc
