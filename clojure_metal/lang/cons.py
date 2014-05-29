@@ -34,6 +34,9 @@ def with_meta(self, meta):
 
 
 def create(*args):
+    return create_from_list(args)
+
+def create_from_list(args):
     acc = nil
     for x in args:
         acc = Cons(x, acc)

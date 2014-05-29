@@ -5,6 +5,7 @@ from exceptions import IndexOutOfBoundsException
 
 
 
+
 defprotocol("IIndexed", "_nth")
 defprotocol("ISeq", "_first", "_rest")
 defprotocol("ICounted", "_count")
@@ -17,6 +18,7 @@ defprotocol("IIntEquiv", "_equiv_int")
 defprotocol("ISeqable", '_seq')
 defprotocol("IHash", "_hash")
 defprotocol("Sequential")
+defprotocol("INamed", "_namespace", "_name")
 
 defprotocol("Number", "_add")
 defprotocol("NumberInt", "_add_int")
@@ -53,6 +55,14 @@ def nth(a, b):
 @wrap_fn
 def seq(a):
     return _seq.invoke1(a)
+
+@wrap_fn
+def name(a):
+    return _name.invoke1(a)
+
+@wrap_fn
+def namespace(a):
+    return _namespace.invoke1(a)
 
 @wrap_fn
 def count(a):
@@ -102,8 +112,12 @@ def __count(a):
     return numbers.int_zero
 
 @extend(nil._type, _seq)
-def __count(a):
+def __seq(a):
     return nil
+
+@extend(nil._type, _hash)
+def __hash(a):
+    return numbers.int_zero
 
 ### Array
 
@@ -127,5 +141,9 @@ class Array(Object):
         raise IndexOutOfBoundsException()
 
 
+
+
+### Misc Imports
+import numbers
 
 ### Array

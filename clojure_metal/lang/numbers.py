@@ -17,6 +17,7 @@ def wrap_int(i):
     return WInt(i)
 
 
+
 RT._equiv.extend(WInt._type, wrap_fn(lambda a, b: RT._equiv_int.invoke2(b, a)))
 @extend(WInt._type, RT._equiv_int)
 def _eq_int_int(b, a):

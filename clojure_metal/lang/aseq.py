@@ -1,25 +1,25 @@
 import rt as RT
+import util as UT
 from base_types import true, false, nil, Object
 from fn import extend
 from numbers import wrap_int
 from rpython.rlib.rarithmetic import r_uint32
-from murmer3 import mix_col_hash
+from murmur3 import mix_col_hash
 
 class ASeq(Object):
     def __init__(self):
         self._hash = None
 
     def rt_equiv(self, obj):
-        if not RT.is_satisfies.invoke2(RT.Sequential, obj):
+        if not UT.is_satisfies(RT.Sequential, obj):
             return false
-        ms = RT.seq.invoke1(obj)
-        s = RT.seq.invoke1(self)
+        ms = UT.seq(obj)
+        s = UT.seq(self)
         while s is not nil:
-            if ms is nil or RT.equiv.invoke2(RT.first.invoke1(s),
-                                             RT.first.invoke1(ms)) is false:
+            if ms is nil or UT.equiv(UT.first(s), UT.first(ms)) is false:
                 return false
-            ms = RT.next.invoke1(ms)
-            s = RT.next.invoke1(s)
+            ms = UT.next(ms)
+            s = UT.next(s)
         return true if ms is nil else false
 
     def rt_hash(self):
@@ -28,7 +28,7 @@ class ASeq(Object):
             hash = r_uint32(1)
             x = RT.seq.invoke1(self)
             while x is not nil:
-                hash = r_uint32(31) * hash + RT.hash.invoke1(RT.first.invoke1(x))._int_value
+                hash = r_uint32(31) * hash + UT.hash(UT.first(x))._int_value
                 n += 1
                 x = RT.next.invoke1(x)
 

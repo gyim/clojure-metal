@@ -31,12 +31,14 @@
 
 # Ported to RPython by Timothy Baldridge
 
+from rpython.rlib.rarithmetic import r_uint32
 
 seed = 0
 C1 = 0xcc9e2d51
 C2 = 0x1b873593
 
 def hash_int(input):
+    assert isinstance(input, r_uint32)
     if input == 0:
         return 0
     k1 = mixK1(input)
@@ -78,3 +80,9 @@ def fmix(h1, length):
     h1 *= 0xc2b2ae35
     h1 ^= h1 >> 16
     return h1
+
+def hash_combine(seed, hash):
+    assert isinstance(seed, r_uint32)
+    assert isinstance(hash, r_uint32)
+    seed ^= hash + 0x9e3779b9 + (seed << 6) + (seed >> 2)
+    return seed
