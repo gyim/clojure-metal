@@ -1,5 +1,5 @@
 import rpython.rlib.rsre.rsre_re as re
-from numbers import wrap_int, wrap_bigint
+from numbers import wrap_int, wrap_bigint, int_zero, bigint_zero
 from fn import AFn, wrap_fn
 from cons import create_from_list as create_list
 from rpython.rlib.rbigint import rbigint
@@ -51,8 +51,8 @@ def match_number(s):
     if m:
         if m.group(2) is not None:
             if m.group(8) is not None:
-                return wrap_bigint(rbigint.fromint(0))
-            return wrap_int(0)
+                return bigint_zero
+            return int_zero
         sign = -1 if m.group(1) == '-' else 1
 
         radix = 10

@@ -13,6 +13,7 @@ defprotocol("INext", "_next")
 defprotocol("IMeta", "_meta")
 defprotocol("IWithMeta", "_with_meta")
 defprotocol("IEquiv", "_equiv")
+defprotocol("IComparable", "_lt")
 defprotocol("ICollection", "_conj")
 defprotocol("IIntEquiv", "_equiv_int")
 defprotocol("IBigIntEquiv", "_equiv_bigint")
@@ -21,9 +22,14 @@ defprotocol("IHash", "_hash")
 defprotocol("Sequential")
 defprotocol("INamed", "_namespace", "_name")
 
-defprotocol("Number", "_add")
-defprotocol("NumberInt", "_add_int")
-defprotocol("NumberBigInt", "_add_int", "_add_bigint")
+defprotocol("Number", "_iszero", "_ispos", "_isneg", "_add", "_addP",
+    "_multiply", "_multiplyP", "_quotient", "_remainder", "_negate",
+    "_negateP", "_inc", "_incP", "_dec", "_decP")
+defprotocol("NumberInt", "_add_int", "_addP_int",
+    "_multiply_int", "_multiplyP_int", "_quotient_int", "_remainder_int",
+    "_lt_int")
+defprotocol("NumberBigInt", "_add_bigint", "_multiply_bigint",
+    "_quotient_bigint", "_remainder_bigint", "_lt_bigint")
 
 @wrap_fn
 def cons(a, b):
