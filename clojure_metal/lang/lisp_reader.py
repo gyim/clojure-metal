@@ -1,6 +1,11 @@
-from numbers import wrap_int
+import rpython.rlib.rsre.rsre_re as re
+from numbers import wrap_int, wrap_bigint
 from fn import AFn, wrap_fn
 from cons import create_from_list as create_list
+from rpython.rlib.rbigint import rbigint
+from rpython.rlib.rarithmetic import LONG_BIT
+
+int_pat = re.compile("^([-+]?)(?:(0)|([1-9][0-9]*)|0[xX]([0-9A-Fa-f]+)|0([0-7]+)|([1-9][0-9]?)[rR]([0-9A-Za-z]+)|0[0-9]+)(N)?$")
 
 def is_whitespace(ch):
     return ch in '\n\r ,\t'
@@ -33,9 +38,55 @@ def read(r, eof_is_error, eof_value, is_recursive):
                 continue
             return ret
 
+        if ch in ("+", "-"):
+            ch2 = r.read()
+            if is_digit(ch2):
+                r.unread(ch2)
+                n = read_number(r, ch)
+                return n
+            r.unread(ch2)
+
 def match_number(s):
-    ## TODO: expand
-    return wrap_int(int(s))
+    m = int_pat.match(s)
+    if m:
+        if m.group(2) is not None:
+            if m.group(8) is not None:
+                return wrap_bigint(rbigint.fromint(0))
+            return wrap_int(0)
+        sign = -1 if m.group(1) == '-' else 1
+
+        radix = 10
+        n = m.group(3)
+        if n is not None:
+            radix = 10
+        if n is None:
+            n = m.group(4)
+            if n is not None:
+                radix = 16
+        if n is None:
+            n = m.group(5)
+            if n is not None:
+                radix = 8
+        if n is None:
+            n = m.group(7)
+            if n is not None:
+                radix = int(m.group(6))
+        if n is None:
+            return None
+
+        bn = rbigint.fromstr(n, radix) # throws rpython.rlib.rstring.InvalidBaseError
+        bn.sign = sign
+
+        if m.group(8) is not None:
+            return wrap_bigint(bn)
+        elif bn.bit_length() < LONG_BIT:
+            return wrap_int(bn.toint())
+        else:
+            return wrap_bigint(bn)
+    else:
+        assert False, "TODO: implement other number types"
+
+    return None
 
 def read_number(r, initch):
     sb = [initch]
